@@ -71,7 +71,7 @@ const data = [
   {
     id: 3,
     title: "Backend developer (PHP Laravel)",
-    ccompany: {
+    company: {
       name: 'Nal Inc.',
       address: 'Toa nha NIC so 6 ngo 7, Ton That Thuyet, Cau Giay, HN',
       url: ''

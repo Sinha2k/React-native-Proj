@@ -16,6 +16,9 @@ const jobTypes = ["Fulltime", "Parttime", "Contractor"];
 
 const Welcome = ({ opacity }) => {
   const [activeJobType, setActiveJobType] = useState("Fulltime");
+
+  const [searchKey, setSearchKey] = useState("")
+
   return (
     <View style={{ flex: 1, padding: SIZES.medium, position: 'relative'}}>
       <View style={styles.container}>
@@ -30,8 +33,8 @@ const Welcome = ({ opacity }) => {
           <View style={styles.searchWrapper}>
             <TextInput
               placeholder="What are you looking for ?"
-              value=""
-              onChange={() => {}}
+              value={searchKey}
+              onChangeText={(value) => setSearchKey(value)}
               style={styles.searchInput}
             />
           </View>
