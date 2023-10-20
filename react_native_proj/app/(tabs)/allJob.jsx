@@ -50,7 +50,7 @@ const AllJob = () => {
           <Text style={{ color: COLORS.tertiary }}>{jobList?.length}</Text>{" "}
           results
         </Text>
-        <ScrollView style={{paddingRight: 3, width: '100%'}}>
+        <ScrollView showsVerticalScrollIndicator={false} style={{paddingRight: 3, width: '100%'}}>
           <View>
             <FlatList 
               data={jobList}

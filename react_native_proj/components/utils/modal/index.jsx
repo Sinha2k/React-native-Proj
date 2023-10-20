@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   TextInput,
@@ -8,13 +8,35 @@ import {
   FlatList,
   TouchableOpacity,
   TouchableWithoutFeedback,
+  KeyboardAvoidingView,
+  Platform,
+  ActivityIndicator,
 } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 import styles from "./modal.style";
 import { COLORS, FONT, SIZES } from "../../../constants";
 
-const BottomModal = ({ keyFilter, data, visible, setVisible }) => {
+const BottomModal = ({ keyFilter, data, visible, setVisible, setChooseFilter, chooseFilter, setDataFilter, placeData }) => {
+
+  const [searchTerm, setSearchTerm] = useState('')
+
+  const [searching, setSearching] = useState(false)
+
+  const handleChooseFilter = (key, item) => {
+    setVisible(false);
+    setChooseFilter({...chooseFilter, [key]: item})
+  }
+
+  useEffect(() => {
+    const delayToSearch= setTimeout(() => {
+      setSearching(false)
+      setDataFilter({...data, [keyFilter]: placeData?.filter((item) => item.includes(searchTerm)) })
+    }, 3000)
+
+    return () => clearTimeout(delayToSearch)
+  }, [searchTerm])
+
   return (
     <Modal
       animationType="fade"
@@ -24,10 +46,13 @@ const BottomModal = ({ keyFilter, data, visible, setVisible }) => {
       onRequestClose={() => setVisible(!visible)}
     >
       <View style={styles.modalLayout}>
+      
         <TouchableWithoutFeedback onPress={() => setVisible(false)}>
           <View style={styles.modalMask}></View>
         </TouchableWithoutFeedback>
+        
         <View style={styles.modalContainer}>
+        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : null}>
           <View
             style={{
               display: "flex",
@@ -55,8 +80,8 @@ const BottomModal = ({ keyFilter, data, visible, setVisible }) => {
               <TextInput
                 style={styles.searchInput}
                 placeholder="Type search key..."
-                onChange={() => {}}
-                value=""
+                onChangeText={(value) => {setSearchTerm(value), setSearching(true)}}
+                value={searchTerm}
               />
               <Ionicons
                 style={styles.searchIcon}
@@ -64,13 +89,14 @@ const BottomModal = ({ keyFilter, data, visible, setVisible }) => {
                 name="search-outline"
                 size={23}
               />
+              {searching && <ActivityIndicator style={{position: 'absolute', right: 5}} size={"small"} />}
             </View>
           )}
           <ScrollView
             style={styles.listContainer}
             showsVerticalScrollIndicator={false}
           >
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => handleChooseFilter(keyFilter, '')}>
               <View style={styles.listItems}>
                 <Text style={styles.textItem}>All</Text>
               </View>
@@ -78,7 +104,7 @@ const BottomModal = ({ keyFilter, data, visible, setVisible }) => {
             <FlatList
               data={data[keyFilter]}
               renderItem={({ item }) => (
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => handleChooseFilter(keyFilter, item)}>
                   <View style={styles.listItems}>
                     <Text style={styles.textItem}>{item}</Text>
                   </View>
@@ -88,6 +114,7 @@ const BottomModal = ({ keyFilter, data, visible, setVisible }) => {
               showsVerticalScrollIndicator={false}
             />
           </ScrollView>
+        </KeyboardAvoidingView>
         </View>
       </View>
     </Modal>

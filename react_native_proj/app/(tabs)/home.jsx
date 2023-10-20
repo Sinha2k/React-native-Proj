@@ -95,6 +95,7 @@ const Home = () => {
           { useNativeDriver: true }
         )}
         scrollEventThrottle={16}
+        showsVerticalScrollIndicator={false}
         style={{ flex: 1 }}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       >

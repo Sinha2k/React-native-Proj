@@ -11,28 +11,56 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import BottomModal from "../modal";
 
 import { COLORS, FONT } from "../../../constants";
-import useFetchData from './api'
+import useFetchData from "./api";
 
 const data = ["Place", "Experiment", "Salary"];
 
-const expData = ['Not required', 'Duoi 1 year', '1 year', '2 years', '3 years', '4 years', '5 years', 'Tren 5 years']
+const expData = [
+  "Not required",
+  "Duoi 1 year",
+  "1 year",
+  "2 years",
+  "3 years",
+  "4 years",
+  "5 years",
+  "Tren 5 years",
+];
 
-const salaryData = ['Duoi 10M', '10 - 15M', '15 - 20M', '20 - 25M', '25 - 30M', '30 - 50M', 'Tren 50M', 'Negotiable']
+const salaryData = [
+  "Duoi 10M",
+  "10 - 15M",
+  "15 - 20M",
+  "20 - 25M",
+  "25 - 30M",
+  "30 - 50M",
+  "Tren 50M",
+  "Negotiable",
+];
 
 const Filter = () => {
   const [focus, setFocus] = useState(false);
 
   const [visible, setVisible] = useState(false);
 
-  const {provinceData, err} = useFetchData()
+  const { provinceData, err } = useFetchData();
 
-  const [keyFilter, setKeyFilter] = useState('')
+  const [keyFilter, setKeyFilter] = useState("");
 
-  const dataFilter = {
-    'Place': provinceData,
-    'Experiment': expData,
-    'Salary': salaryData
-  }
+  const [chooseFilter, setChooseFilter] = useState({
+    Place: "",
+    Experiment: "",
+    Salaray: "",
+  });
+
+  const [dataFilter, setDataFilter] = useState({
+    Place: [],
+    Experiment: expData,
+    Salary: salaryData,
+  })
+
+  useEffect(() => {
+    setDataFilter({...dataFilter, ['Place']: provinceData})
+  }, [])
 
 
   return (
@@ -40,7 +68,10 @@ const Filter = () => {
       <View style={styles.searchContainer}>
         <TextInput
           onFocus={() => setFocus(true)}
-          style={[styles.searchInput, focus && {borderColor: COLORS.tertiary}]}
+          style={[
+            styles.searchInput,
+            focus && { borderColor: COLORS.tertiary },
+          ]}
           placeholder="Name - Company - Place..."
           onChange={() => {}}
           value=""
@@ -68,31 +99,69 @@ const Filter = () => {
           <Ionicons
             style={styles.filterIcon}
             name="filter-outline"
-            color="black"
+            color={`${
+              Object.getOwnPropertyNames(chooseFilter).every(
+                (value) => chooseFilter[value] === ""
+              )
+                ? "black"
+                : COLORS.tertiary
+            }`}
             size={20}
           />
-          <Text style={{ fontFamily: FONT.medium, marginLeft: 5 }}>Filter</Text>
+          <Text
+            style={{
+              fontFamily: FONT.medium,
+              marginLeft: 5,
+              color: `${
+                Object.getOwnPropertyNames(chooseFilter).every(
+                  (value) => chooseFilter[value] === ""
+                )
+                  ? "black"
+                  : COLORS.tertiary
+              }`,
+            }}
+          >
+            Filter
+          </Text>
         </View>
         <View style={{ marginLeft: 7, marginRight: 80 }}>
           <FlatList
             data={data}
             horizontal
+            showsHorizontalScrollIndicator={false}
             contentContainerStyle={{ columnGap: 10 }}
             keyExtractor={(item) => item}
             renderItem={({ item }) => (
-              <TouchableOpacity onPress={() => {setVisible(true), setKeyFilter(item)}}>
-                <View style={styles.filterItem}>
-                  <Text style={{ fontFamily: FONT.medium, marginRight: 5 }}>
-                    {item}
+              <TouchableOpacity
+                onPress={() => {
+                  setVisible(true), setKeyFilter(item);
+                }}
+              >
+                <View style={styles.filterItem(chooseFilter[item])}>
+                  <Text style={styles.filterItemText(chooseFilter[item])}>
+                    {chooseFilter[item] ? chooseFilter[item] : item}
                   </Text>
-                  <Ionicons name="chevron-down-outline" size={20} />
+                  <Ionicons
+                    color={`${chooseFilter[item] ? COLORS.tertiary : "black"}`}
+                    name="chevron-down-outline"
+                    size={20}
+                  />
                 </View>
               </TouchableOpacity>
             )}
           />
         </View>
       </View>
-      <BottomModal visible={visible} setVisible={setVisible} keyFilter={keyFilter} data={dataFilter} />
+      <BottomModal
+        visible={visible}
+        setVisible={setVisible}
+        keyFilter={keyFilter}
+        data={dataFilter}
+        setChooseFilter={setChooseFilter}
+        chooseFilter={chooseFilter}
+        setDataFilter={setDataFilter}
+        placeData={provinceData}
+      />
     </View>
   );
 };
@@ -140,7 +209,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
     overflow: "hidden",
   },
-  filterItem: {
+  filterItem: (value) => ({
     padding: 7,
     borderRadius: 20,
     display: "flex",
@@ -148,8 +217,13 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     borderWidth: 1,
-    borderColor: "#ECECEC",
-  },
+    borderColor: value ? COLORS.tertiary : "#ECECEC",
+  }),
+  filterItemText: (value) => ({
+    fontFamily: FONT.medium,
+    marginRight: 5,
+    color: value ? COLORS.tertiary : "black",
+  }),
 });
 
 export default Filter;

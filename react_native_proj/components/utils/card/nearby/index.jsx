@@ -1,7 +1,6 @@
 import { View, Text, TouchableOpacity, Image } from "react-native";
 
-import { icons } from "../../../../constants";
-
+import { COLORS, FONT, icons } from "../../../../constants";
 import styles from "./nearby.style";
 
 const salaryValue = (salary) => {
@@ -10,6 +9,13 @@ const salaryValue = (salary) => {
   else if (salary?.from > 0 && salary?.to === 0) return `Tren ${salary?.from}`;
   else if (salary?.from === 0 && salary?.to > 0) return `Duoi ${salary?.to}`;
   else return "Negotiable";
+};
+
+const expValue = (exp) => {
+  if (exp?.from > 0 && exp?.to > 0) return `${exp?.from} - ${exp?.to}`;
+  else if (exp?.from > 0 && exp?.to === 0) return `Tren ${exp?.from}`;
+  else if (exp?.from === 0 && exp?.to > 0) return `Duoi ${exp?.to}`;
+  else return "No experiment required";
 };
 
 const NearbyCard = ({ job, handleNavigate }) => {
@@ -25,9 +31,6 @@ const NearbyCard = ({ job, handleNavigate }) => {
       <View
         style={{
           width: "80%",
-          justifyContent: "space-between",
-          display: "flex",
-          flexDirection: "column",
         }}
       >
         <Text style={styles.title}>
@@ -46,7 +49,7 @@ const NearbyCard = ({ job, handleNavigate }) => {
               flexDirection: "row",
               alignItems: "center",
               opacity: 0.5,
-              marginLeft: 10
+              marginLeft: 10,
             }}
           >
             <Image style={{ width: 20, height: 20 }} source={icons.location} />
@@ -57,6 +60,13 @@ const NearbyCard = ({ job, handleNavigate }) => {
             </Text>
           </View>
         </View>
+        <Text style={{fontFamily: FONT.medium, color: COLORS.tertiary, fontSize: 10, marginTop: 8}}>{`${expValue(
+          job?.experiment
+        )}${
+          expValue(job?.experiment) === "No experiment required"
+            ? ""
+            : " years"
+        }`}</Text>
       </View>
     </TouchableOpacity>
   );
