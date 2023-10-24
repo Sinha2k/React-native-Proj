@@ -61,11 +61,14 @@ const styles = StyleSheet.create({
   listContainer: {
     marginTop: 10,
     height: 'auto',
-    marginBottom: 40
+    marginBottom: 10
   },
   listItems: {
     width: '100%',
     display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     borderBottomColor: '#F8F8F8',
     borderBottomWidth: 1,
     paddingVertical: 10

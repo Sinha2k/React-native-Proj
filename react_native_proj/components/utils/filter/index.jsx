@@ -56,12 +56,13 @@ const Filter = () => {
     Place: [],
     Experiment: expData,
     Salary: salaryData,
-  })
+  });
 
   useEffect(() => {
-    setDataFilter({...dataFilter, ['Place']: provinceData})
-  }, [])
-
+    if (provinceData) {
+      setDataFilter({ ...dataFilter, ["Place"]: provinceData });
+    }
+  }, [provinceData]);
 
   return (
     <View style={styles.filterContainer}>

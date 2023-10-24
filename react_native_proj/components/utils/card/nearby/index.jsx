@@ -60,12 +60,15 @@ const NearbyCard = ({ job, handleNavigate }) => {
             </Text>
           </View>
         </View>
-        <Text style={{fontFamily: FONT.medium, color: COLORS.tertiary, fontSize: 10, marginTop: 8}}>{`${expValue(
-          job?.experiment
-        )}${
-          expValue(job?.experiment) === "No experiment required"
-            ? ""
-            : " years"
+        <Text
+          style={{
+            fontFamily: FONT.medium,
+            color: COLORS.tertiary,
+            fontSize: 10,
+            marginTop: 8,
+          }}
+        >{`${expValue(job?.experiment)}${
+          expValue(job?.experiment) === "No experiment required" ? "" : " years"
         }`}</Text>
       </View>
     </TouchableOpacity>

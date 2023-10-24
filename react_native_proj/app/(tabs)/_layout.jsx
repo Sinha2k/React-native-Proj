@@ -2,10 +2,12 @@ import { Tabs } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 import { COLORS } from "../../constants";
+import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 
 export default () => {
   return (
-    <Tabs>
+    <ActionSheetProvider>
+      <Tabs>
       <Tabs.Screen
         options={{
           headerShown: false,
@@ -75,5 +77,6 @@ export default () => {
         name="account"
       />
     </Tabs>
+    </ActionSheetProvider>
   );
 };
