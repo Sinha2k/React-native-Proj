@@ -27,6 +27,7 @@ const Layout = () => {
 
   return (
     <Stack onLayout={onLayoutRootView}>
+      <Stack.Screen options={{headerShown: false, gestureEnabled: false}} name="auth/login" />
       <Stack.Screen options={{headerShown: false}} name="(tabs)" />
     </Stack>
   );

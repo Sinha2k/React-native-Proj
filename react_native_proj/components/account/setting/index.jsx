@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { FONT } from "../../../constants";
 import { useRouter } from "expo-router";
+import ModalDialog from "../../utils/modal/modalDialog";
 
 const data = [
   {
@@ -35,6 +36,8 @@ const Settings = () => {
 
     const router = useRouter()
 
+    const [visible, setVisible] = useState(false)
+
   return (
     <View style={{ marginTop: 5 }}>
       {data.map((item) => {
@@ -48,7 +51,7 @@ const Settings = () => {
           </TouchableOpacity>
         );
       })}
-      <TouchableOpacity>
+      <TouchableOpacity onPress={() => setVisible(true)}>
         <View
             style={{
             width: "100%",
@@ -63,6 +66,7 @@ const Settings = () => {
             <Ionicons name="log-out-outline" size={25} />
         </View>
       </TouchableOpacity>
+      <ModalDialog visible={visible} setVisible={setVisible} />
     </View>
   );
 };
