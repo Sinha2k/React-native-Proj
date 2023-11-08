@@ -1,5 +1,6 @@
 import { View, Text, TouchableOpacity, FlatList } from "react-native";
 import { useRouter } from "expo-router";
+import { useSelector } from "react-redux";
 
 import styles from "../PopularJob/popularjob.style";
 import NearbyCard from "../../utils/card/nearby";
@@ -7,6 +8,10 @@ import data from '../../../data/data.js'
 
 const NearbyJob = () => {
   const router = useRouter();
+
+  const jobList = useSelector(state => state.jobs.jobList)
+
+  const dataSkeleton = [1, 2, 3, 4, 5]
 
   return (
     <View style={styles.container}>
@@ -18,11 +23,11 @@ const NearbyJob = () => {
       </View>
       <View style={styles.flatlist}>
         <FlatList
-          data={data}
+          data={jobList ? jobList : dataSkeleton}
           renderItem={({ item }) => (
             <TouchableOpacity>
               <NearbyCard
-                job={item}
+                job={item.attributes}
                 handleNavigate={() => router.push(`/job-details/${item.id}`)}
               />
             </TouchableOpacity>

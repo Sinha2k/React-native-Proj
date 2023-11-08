@@ -4,9 +4,14 @@ import { useRouter } from "expo-router";
 import styles from "./popularjob.style";
 import PopularCard from "../../utils/card/popular";
 import data from "../../../data/data.js";
+import { useSelector } from "react-redux";
 
 const PopularJob = () => {
   const router = useRouter();
+
+  const dataSkeleton = [1, 2, 3]
+
+  const jobList = useSelector(state => state.jobs.jobList)
 
   return (
     <View style={[styles.container]}>
@@ -20,12 +25,12 @@ const PopularJob = () => {
       </View>
       <View style={styles.flatlist}>
         <FlatList
-          data={data}
+          data={jobList ? jobList : dataSkeleton}
           renderItem={({ item }) => (
             <TouchableOpacity>
               <PopularCard
                 handleNavigate={() => router.push(`/job-details/${item.id}`)}
-                job={item}
+                job={item.attributes}
               />
             </TouchableOpacity>
           )}

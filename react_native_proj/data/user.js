@@ -8,7 +8,7 @@ const user = {
     avatar: images.profile,
     exp: 0,
     desiredJob: 'It Software',
-    placeJob: [],
+    placeJob: [], 
     appliedJob: [data[1], data[2]],
     savedJob: [data[3], data[4]],
     suitabledJob: data

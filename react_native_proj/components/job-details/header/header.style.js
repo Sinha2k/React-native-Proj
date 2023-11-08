@@ -26,6 +26,7 @@ const styles = StyleSheet.create({
     top: '50%',
     ...SHADOWS.small,
     borderRadius: 5,
+    width: '90%'
   },
   companyContent: {
     marginTop: -50 ,

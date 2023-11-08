@@ -1,7 +1,12 @@
-import { Redirect } from "expo-router";
+import { Redirect, useRootNavigationState } from "expo-router";
 
 const StartApp = () => {
-  return <Redirect href="/auth/login" />;
+  const rootNavigationState = useRootNavigationState();
+
+  if (!rootNavigationState?.key) return null;
+  return (
+    <Redirect href="/presentation" />
+  );
 };
 
 export default StartApp;

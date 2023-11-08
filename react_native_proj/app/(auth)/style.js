@@ -30,7 +30,6 @@ const styles = StyleSheet.create({
         width: '100%',
         backgroundColor: '#ECECEC',
         paddingLeft: 50,
-        color: COLORS.gray2,
         paddingVertical: 15,
         paddingRight: 20
     },
@@ -59,6 +58,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         height: 50,
+        flexDirection: 'row',
         backgroundColor: COLORS.tertiary,
         borderRadius: 30,
         marginTop: 15,
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     orLoginText: {
         fontFamily: FONT.medium,
         backgroundColor: COLORS.white,
-        width: '30%',
+        width: '40%',
         textAlign: 'center'
     },
     line: {

@@ -2,6 +2,8 @@ import { View, Text, TouchableOpacity, Image } from "react-native";
 
 import { COLORS, FONT, icons } from "../../../../constants";
 import styles from "./nearby.style";
+import Skeleton from "../../skeleton";
+import { useSelector } from "react-redux";
 
 const salaryValue = (salary) => {
   if (salary?.from > 0 && salary?.to > 0)
@@ -19,11 +21,32 @@ const expValue = (exp) => {
 };
 
 const NearbyCard = ({ job, handleNavigate }) => {
-  return (
+  const status = useSelector((state) => state.jobs.status);
+
+  const renderSkeletonCard = () => {
+    return (
+      <View style={styles.card}>
+        <Skeleton width={45} style={{ height: 45 }} />
+        <View style={{ width: "80%" }}>
+          <Skeleton width={240} style={{ height: 12, marginTop: 0 }} />
+          <Skeleton width={240} style={{ height: 12, marginTop: 10 }} />
+          <View style={styles.sala_loca}>
+            <Skeleton width={110} style={{ height: 12, marginRight: 20 }} />
+            <Skeleton width={110} style={{ height: 12 }} />
+          </View>
+          <Skeleton width={240} style={{ height: 12, marginTop: 10 }} />
+        </View>
+      </View>
+    );
+  };
+
+  return status === "loading" ? (
+    renderSkeletonCard()
+  ) : (
     <TouchableOpacity style={styles.card} onPress={handleNavigate}>
       <TouchableOpacity>
         <Image
-          source={{ uri: job.logo }}
+          source={{ uri: job.company.data.attributes.logo.data.attributes.url }}
           resizeMode="contain"
           style={styles.logo}
         />
@@ -36,7 +59,7 @@ const NearbyCard = ({ job, handleNavigate }) => {
         <Text style={styles.title}>
           {job.title.length > 30 ? job.title.slice(0, 30) + "..." : job.title}
         </Text>
-        <Text style={styles.company}>{job.company?.name}</Text>
+        <Text style={styles.company}>{job.company?.data.attributes.name}</Text>
         <View style={styles.sala_loca}>
           <View style={styles.salaContainer}>
             <Text style={styles.salaText}>{`${salaryValue(job?.salary)}${

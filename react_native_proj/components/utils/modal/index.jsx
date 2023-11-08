@@ -14,9 +14,11 @@ import {
 } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Checkbox from "expo-checkbox";
+import { useDispatch, useSelector } from "react-redux";
 
 import styles from "./modal.style";
 import { COLORS, FONT, SIZES } from "../../../constants";
+import { updateEmployee } from "../../../redux/reducer/employeeSliceReducer";
 
 const BottomModal = ({
   keyFilter,
@@ -33,21 +35,54 @@ const BottomModal = ({
 
   const [searching, setSearching] = useState(false);
 
+  const dispatch = useDispatch();
+
+  const employeeId = useSelector((state) => state.employee.employeeId);
+
   const handleChooseFilter = (key, item) => {
     if (key !== "placeJob" && key !== "desiredJob") {
       setVisible(false);
-      setChooseFilter({ ...chooseFilter, [key]: item });
+      if (key === "exp") {
+        setChooseFilter({ ...chooseFilter, [key]: item.value });
+        dispatch(
+          updateEmployee({
+            employeeId: employeeId,
+            bodyData: {
+              placeJob: chooseFilter["placeJob"],
+              desiredJob: chooseFilter["desiredJob"],
+              exp: item.value,
+            },
+          })
+        );
+      } else {
+        setChooseFilter({ ...chooseFilter, [key]: item });
+      }
     }
   };
 
   const handleCheckbox = (value, item) => {
     if (value) {
-      const array = chooseFilter[keyFilter];
-      array?.push(item);
+      const array = Array.from(chooseFilter[keyFilter]);
+      array.push(item);
+      console.log(array);
       setChooseFilter({ ...chooseFilter, [keyFilter]: array });
     } else {
-      const array = chooseFilter[keyFilter]?.filter((i) => i !== item);
+      const convertArray = Array.from(chooseFilter[keyFilter]);
+      const array = convertArray?.filter((i) => i !== item);
+      console.log(array);
       setChooseFilter({ ...chooseFilter, [keyFilter]: array });
+    }
+  };
+
+  const handleCloseModal = (key) => {
+    setVisible(false);
+    if (key === "placeJob" || key === "desiredJob") {
+      dispatch(
+        updateEmployee({
+          employeeId: employeeId,
+          bodyData: chooseFilter,
+        })
+      );
     }
   };
 
@@ -77,7 +112,13 @@ const BottomModal = ({
       onRequestClose={() => setVisible(!visible)}
     >
       <View style={styles.modalLayout}>
-        <TouchableWithoutFeedback onPress={() => setVisible(false)}>
+        <TouchableWithoutFeedback
+          onPress={() => {
+            if(!["placeJob", "desiredJob"].includes(keyFilter)) {
+              setVisible(false)
+            };
+          }}
+        >
           <View style={styles.modalMask}></View>
         </TouchableWithoutFeedback>
 
@@ -109,7 +150,7 @@ const BottomModal = ({
               </Text>
               <TouchableOpacity
                 style={styles.closeButton}
-                onPress={() => setVisible(false)}
+                onPress={() => handleCloseModal(keyFilter)}
               >
                 <Ionicons
                   style={{ marginLeft: 2, opacity: 0.6 }}
@@ -165,7 +206,9 @@ const BottomModal = ({
                     onPress={() => handleChooseFilter(keyFilter, item)}
                   >
                     <View style={styles.listItems}>
-                      <Text style={styles.textItem}>{item}</Text>
+                      <Text style={styles.textItem}>
+                        {keyFilter === "exp" ? item.desc : item}
+                      </Text>
                       {keyFilter === "placeJob" ||
                       keyFilter === "desiredJob" ? (
                         <Checkbox
@@ -183,7 +226,9 @@ const BottomModal = ({
                     </View>
                   </TouchableOpacity>
                 )}
-                keyExtractor={(item) => item}
+                keyExtractor={(item) =>
+                  keyFilter === "exp" ? item.value : item
+                }
                 showsVerticalScrollIndicator={false}
               />
             </ScrollView>

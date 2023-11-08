@@ -1,18 +1,28 @@
 import { Stack, useRouter } from "expo-router";
 import { View, Text, SafeAreaView, TouchableOpacity, ScrollView, FlatList } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 import styles from "../job-details/style";
 import Filter from "../../components/utils/filter";
 import { COLORS, FONT, SIZES } from "../../constants";
 import data from "../../data/data";
 import NearbyJob from '../../components/utils/card/nearby'
+import { getAllJobs } from "../../redux/reducer/jobSliceReducer";
 
 const AllJob = () => {
   const router = useRouter();
 
   const [jobList, setJobList] = useState(data);
+
+  const dispatch = useDispatch()
+
+  const jobListData = useSelector(state => state.jobs.jobList)
+
+  useEffect(() => {
+    dispatch(getAllJobs())
+  }, [])
 
   return (
     <SafeAreaView style={{ backgroundColor: "#fff", flex: 1, marginBottom: 190 }}>
@@ -53,11 +63,11 @@ const AllJob = () => {
         <ScrollView showsVerticalScrollIndicator={false} style={{paddingRight: 3, width: '100%'}}>
           <View>
             <FlatList 
-              data={jobList}
+              data={jobListData}
               renderItem={({item}) => (
                 <TouchableOpacity>
                   <NearbyJob
-                    job={item}
+                    job={item.attributes}
                     handleNavigate={() => router.push(`/job-details/${item.id}`)}
                   />
                 </TouchableOpacity>

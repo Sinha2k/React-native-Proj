@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
+import { useSelector } from "react-redux";
 
 import BottomModal from "../../utils/modal";
 import useFetchData from "../../utils/filter/api";
 import { FONT, COLORS, SIZES } from "../../../constants";
 
 const expData = [
-  "Not required",
-  "Duoi 1 year",
-  "1 year",
-  "2 years",
-  "3 years",
-  "4 years",
-  "5 years",
-  "Tren 5 years",
+  { value: 0, desc: "No experiment" },
+  { value: 1, desc: "1 year" },
+  { value: 2, desc: "2 years" },
+  { value: 3, desc: "3 years" },
+  { value: 4, desc: "4 years" },
+  { value: 5, desc: "5 years" },
+  { value: 6, desc: "Tren 5 years" },
 ];
 
 const desiredJobData = [
@@ -33,10 +33,12 @@ const Profile = ({ user }) => {
 
   const [keyFilter, setKeyFilter] = useState("");
 
+  const account = useSelector(state => state.employee.account)
+
   const [chooseFilter, setChooseFilter] = useState({
-    placeJob: [],
-    exp: "",
-    desiredJob: ["It - Software"],
+    placeJob: account.placeJob,
+    exp: account.exp,
+    desiredJob: account.desiredJob,
   });
 
   const [dataFilter, setDataFilter] = useState({
@@ -70,19 +72,9 @@ const Profile = ({ user }) => {
           {/* <Text style={styles.profileContentText}>
             {user.exp === 0 ? "No experiment" : user.exp + "years"}
           </Text> */}
-          {chooseFilter.exp ? (
-            <Text style={styles.profileContentText}>{chooseFilter.exp}</Text>
-          ) : (
-            <Text
-              style={{
-                fontFamily: FONT.medium,
-                color: "#F5A125",
-                fontSize: SIZES.small,
-              }}
-            >
-              Not updated yet
-            </Text>
-          )}
+          <Text style={styles.profileContentText}>
+            {expData.find((item) => item.value == chooseFilter.exp)?.desc}
+          </Text>
           <View></View>
         </View>
       </View>

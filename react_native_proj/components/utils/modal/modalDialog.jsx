@@ -7,14 +7,15 @@ import {
   TouchableWithoutFeedback,
   TouchableOpacity,
 } from "react-native";
-import { useRouter } from "expo-router";
 
-import { COLORS, FONT, SIZES } from "../../../constants";
+import { FONT, SIZES } from "../../../constants";
+import { useAuth } from "../../../app/context/AuthContext";
 
 const { height, width } = Dimensions.get("screen");
 
 const ModalDialog = ({ visible, setVisible }) => {
-  const router = useRouter();
+
+  const {onLogout} = useAuth() 
 
   return (
     <Modal
@@ -42,7 +43,7 @@ const ModalDialog = ({ visible, setVisible }) => {
               style={[styles.buttonItem, { backgroundColor: "red" }]}
               onPress={() => {
                 setVisible(false);
-                router.push("/auth/login");
+                onLogout();
               }}
             >
               <Text style={{ color: "#fff", fontFamily: FONT.medium }}>

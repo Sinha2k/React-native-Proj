@@ -1,12 +1,21 @@
-import { Stack } from "expo-router";
-import { View, Text, SafeAreaView, Animated, RefreshControl } from "react-native";
+import {
+  View,
+  Text,
+  SafeAreaView,
+  Animated,
+  RefreshControl,
+  Image,
+} from "react-native";
+import { useState, useCallback, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
-import { images, COLORS, FONT, SIZES } from "../../constants";
-import ScreenHeaderBtn from "../../components/utils/header/ScreenHeaderBtn";
+import { COLORS, FONT, SIZES } from "../../constants";
 import Welcome from "../../components/home/welcome";
 import PopularJob from "../../components/home/PopularJob";
 import NearbyJob from "../../components/home/NearbyJob";
-import { useState, useCallback } from "react";
+import { getAllJobs } from "../../redux/reducer/jobSliceReducer";
+import { getEmployee } from "../../redux/reducer/employeeSliceReducer";
+import { useAuth } from "../context/AuthContext";
 
 const Home = () => {
   const scrollY = new Animated.Value(0);
@@ -28,11 +37,25 @@ const Home = () => {
 
   const [refreshing, setRefreshing] = useState(false);
 
+  const dispatch = useDispatch();
+
+  const status = useSelector((state) => state.jobs.status);
+
+  const account = useSelector((state) => state.employee.account);
+
+  const {authState} = useAuth()
+
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     setTimeout(() => {
-      setRefreshing(false);
+      dispatch(getAllJobs());
+      setRefreshing(status === "loading");
     }, 2000);
+  }, []);
+
+  useEffect(() => {
+    dispatch(getAllJobs());
+    dispatch(getEmployee(authState.user.id))
   }, []);
 
   return (
@@ -70,10 +93,19 @@ const Home = () => {
             marginTop: 40,
           }}
         >
-          <ScreenHeaderBtn iconUrl={images.profile} dimension="100%" />
+          {/* <ScreenHeaderBtn iconUrl={images.profile} dimension="100%" /> */}
+          <Image
+            source={{
+              uri: account?.avatar?.data !== null
+                ? account?.avatar?.data?.attributes.url
+                : "https://res.cloudinary.com/dwapyi65c/image/upload/v1698951441/profile_60c5a0cd5b.png",
+            }}
+            resizeMode="cover"
+            style={{width: 50, height: 50, borderRadius: 20}}
+          />
           <View style={{ marginLeft: 20 }}>
             <Text style={{ fontFamily: FONT.medium, fontSize: SIZES.medium }}>
-              Hello SinHa
+              Hello {account?.profile?.data?.attributes?.username}
             </Text>
             <Text
               style={{
@@ -97,7 +129,9 @@ const Home = () => {
         scrollEventThrottle={16}
         showsVerticalScrollIndicator={false}
         style={{ flex: 1 }}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
       >
         <View style={{ marginTop: 250 }} />
         <PopularJob />

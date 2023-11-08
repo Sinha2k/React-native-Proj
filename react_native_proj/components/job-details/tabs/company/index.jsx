@@ -7,7 +7,7 @@ import { COLORS, FONT, SIZES } from "../../../../constants";
 const Company = ({ job }) => {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{job?.company?.name}</Text>
+      <Text style={styles.title}>{job.company?.data.attributes.name}</Text>
       <View style={styles.info_item}>
         <View style={styles.item_icon}>
           <Ionicons name="business" color={COLORS.tertiary} size={20} />
@@ -23,7 +23,7 @@ const Company = ({ job }) => {
             Address
           </Text>
           <Text style={{ fontFamily: FONT.bold, fontSize: 13 }}>
-            {job?.company?.address}
+            {job.company?.data.attributes.address}
           </Text>
         </View>
       </View>
@@ -42,7 +42,7 @@ const Company = ({ job }) => {
             Website
           </Text>
           <Text style={{ fontFamily: FONT.bold, fontSize: 13 }}>
-            {job?.company?.url}
+            {job.company?.data.attributes.url}
           </Text>
         </View>
       </View>

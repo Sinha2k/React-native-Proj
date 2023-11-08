@@ -1,8 +1,10 @@
 import { View, Text, TouchableOpacity, Image } from "react-native";
+import { useSelector } from "react-redux";
 
 import { icons } from "../../../../constants";
 
 import styles from "./popular.style";
+import Skeleton from "../../skeleton";
 
 const salaryValue = (salary) => {
   if (salary?.from > 0 && salary?.to > 0)
@@ -13,16 +15,34 @@ const salaryValue = (salary) => {
 };
 
 const PopularCard = ({ job, handleNavigate }) => {
-  return (
+  const status = useSelector((state) => state.jobs.status);
+
+  const renderSkeletonCard = () => {
+    return (
+      <View style={styles.card}>
+        <Skeleton width={70} style={{ height: 60 }} />
+        <Skeleton width={168} style={{ height: 15, marginTop: 15 }} />
+        <Skeleton width={168} style={{ height: 15, marginTop: 10 }} />
+        <View style={styles.sala_loca}>
+          <Skeleton width={80} style={{ height: 20 }} />
+          <Skeleton width={80} style={{ width: 50, height: 20 }} />
+        </View>
+      </View>
+    );
+  };
+
+  return status === "loading" ? (
+    renderSkeletonCard()
+  ) : (
     <TouchableOpacity style={styles.card} onPress={handleNavigate}>
       <TouchableOpacity>
         <Image
-          source={{ uri: job.logo }}
+          source={{ uri: job.company.data.attributes.logo.data.attributes.url }}
           resizeMode="contain"
           style={styles.logo}
         />
       </TouchableOpacity>
-      <Text style={styles.company}>{job.company?.name}</Text>
+      <Text style={styles.company}>{job.company?.data.attributes.name}</Text>
       <Text style={styles.title}>
         {job.title.length > 40 ? job.title.slice(0, 36) + "..." : job.title}
       </Text>
