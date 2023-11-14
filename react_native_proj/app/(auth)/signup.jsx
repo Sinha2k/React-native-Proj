@@ -61,7 +61,7 @@ const Signup = () => {
 
   const router = useRouter();
 
-  const {onRegister} = useAuth()
+  const {onRegister, authState} = useAuth()
 
   const signupSubmit = (bodyData) => {
     let check = Object.keys(bodyData).map(key => bodyData[key])
@@ -69,6 +69,7 @@ const Signup = () => {
       if(bodyData["password"] !== bodyData["confirmPassword"]) {
         showToast("Password and comfirmPassword don't match", "#FEAB21")
       } else {
+        console.log(bodyData);
         onRegister(bodyData)
       }
     } else {

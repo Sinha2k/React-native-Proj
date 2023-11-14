@@ -25,16 +25,28 @@ import {
   uploadImage,
 } from "../../redux/reducer/employeeSliceReducer";
 import Loading from "../../components/utils/loading/loading";
+import { useAuth } from "../context/AuthContext";
+import {
+  getEmployer,
+  uploadImageCompany,
+  uploadImageEmployer,
+} from "../../redux/reducer/employerSliceReducer";
 
 const Account = () => {
   const [isEnabled, setIsEnabled] = useState(false);
   const toggleSwitch = () => setIsEnabled(!isEnabled);
 
-  const account = useSelector((state) => state.employee.account);
+  const { authState } = useAuth();
+
+  const roleAccount = authState.user?.role?.data?.attributes;
+
+  const { account, status } = useSelector((state) =>
+    roleAccount?.name === "Employee" ? state.employee : state.employer
+  );
 
   const employeeId = useSelector((state) => state.employee.employeeId);
 
-  const status = useSelector((state) => state.employee.status);
+  const employerId = useSelector((state) => state.employer.employerId);
 
   const dispatch = useDispatch();
 
@@ -48,7 +60,7 @@ const Account = () => {
     });
   };
 
-  const chooseImage = async (useLibrary) => {
+  const chooseImage = async (useLibrary, option) => {
     let result;
     const options = {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -72,21 +84,45 @@ const Account = () => {
         type: `image/${result.assets[0].uri.split(".")[1]}`,
         name: new Date() + "_avatar",
       });
-      formData.append("ref", "api::employee.employee");
-      formData.append("refId", employeeId);
-      formData.append("field", "avatar");
-      await dispatch(uploadImage(formData));
-      dispatch(getEmployee(account.profile?.data?.id))
+      formData.append(
+        "ref",
+        option === "avatar"
+          ? roleAccount?.name === "Employee"
+            ? "api::employee.employee"
+            : "api::employer.employer"
+          : "api::company.company"
+      );
+      formData.append(
+        "refId",
+        option === "avatar"
+          ? roleAccount?.name === "Employee"
+            ? employeeId
+            : employerId
+          : account.company?.data?.id
+      );
+      formData.append("field", option === "avatar" ? "avatar" : "logo");
+      await dispatch(
+        option === "avatar"
+          ? roleAccount?.name === "Employee"
+            ? uploadImage(formData)
+            : uploadImageEmployer(formData)
+          : uploadImageCompany(formData)
+      );
+      dispatch(
+        roleAccount?.name === "Employee"
+          ? getEmployee(account.profile?.data?.id)
+          : getEmployer(account.profile?.data?.id)
+      );
     }
   };
 
   const { showActionSheetWithOptions } = useActionSheet();
 
-  const openBottomSheet = () => {
+  const openBottomSheet = (upload) => {
     const options = ["Camera", "Album", "Delete", "Cancel"];
     const destructiveButtonIndex = 2;
     const cancelButtonIndex = 3;
-    const title = "Update avatar";
+    const title = upload === "logo" ? "Update logo" : "Update avatar";
 
     showActionSheetWithOptions(
       {
@@ -98,10 +134,10 @@ const Account = () => {
       (selectedIndex) => {
         switch (selectedIndex) {
           case 0:
-            chooseImage(false);
+            chooseImage(false, upload);
             break;
           case 1:
-            chooseImage(true);
+            chooseImage(true, upload);
             break;
 
           case destructiveButtonIndex:
@@ -189,7 +225,7 @@ const Account = () => {
                     borderRadius: 100,
                     padding: 2,
                   }}
-                  onPress={openBottomSheet}
+                  onPress={() => openBottomSheet("avatar")}
                 >
                   <Ionicons name="camera" size={20} />
                 </TouchableOpacity>
@@ -240,76 +276,83 @@ const Account = () => {
       >
         <View style={{ marginTop: 155 }}></View>
 
-        <Profile user={user} />
+        <Profile
+          openBottomSheet={() => openBottomSheet("logo")}
+          role={roleAccount?.name}
+        />
 
-        <Text style={{ fontFamily: FONT.bold, paddingTop: 15 }}>
-          CV Management
-        </Text>
-        <View
-          style={[
-            styles.profileItem,
-            {
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
-            },
-          ]}
-        >
-          <View
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
-            <Ionicons name="cellular" size={20} color={COLORS.tertiary} />
-            <Text style={{ marginLeft: 20, fontFamily: FONT.regular }}>
-              Status apply job
+        {roleAccount?.name === "Employee" && (
+          <>
+            <Text style={{ fontFamily: FONT.bold, paddingTop: 15 }}>
+              CV Management
             </Text>
-          </View>
-          <Switch
-            trackColor={{ false: "#ECECEC", true: COLORS.tertiary }}
-            thumbColor={isEnabled ? "#fff" : "#fff"}
-            ios_backgroundColor="#ECECEC"
-            onValueChange={toggleSwitch}
-            value={isEnabled}
-          />
-        </View>
-        <View
-          style={[
-            styles.profileItem,
-            {
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
-            },
-          ]}
-        >
-          <View
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
-            <Ionicons name="person" size={20} color={COLORS.tertiary} />
-            <Text style={{ marginLeft: 20, fontFamily: FONT.regular }}>
-              Allow to contact
-            </Text>
-          </View>
-          <Switch
-            trackColor={{ false: "#ECECEC", true: COLORS.tertiary }}
-            thumbColor={isEnabled ? "#fff" : "#fff"}
-            ios_backgroundColor="#ECECEC"
-            onValueChange={toggleSwitch}
-            value={isEnabled}
-          />
-        </View>
+            <View
+              style={[
+                styles.profileItem,
+                {
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                },
+              ]}
+            >
+              <View
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                <Ionicons name="cellular" size={20} color={COLORS.tertiary} />
+                <Text style={{ marginLeft: 20, fontFamily: FONT.regular }}>
+                  Status apply job
+                </Text>
+              </View>
+              <Switch
+                trackColor={{ false: "#ECECEC", true: COLORS.tertiary }}
+                thumbColor={isEnabled ? "#fff" : "#fff"}
+                ios_backgroundColor="#ECECEC"
+                onValueChange={toggleSwitch}
+                value={isEnabled}
+              />
+            </View>
+            <View
+              style={[
+                styles.profileItem,
+                {
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                },
+              ]}
+            >
+              <View
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                <Ionicons name="person" size={20} color={COLORS.tertiary} />
+                <Text style={{ marginLeft: 20, fontFamily: FONT.regular }}>
+                  Allow to contact
+                </Text>
+              </View>
+              <Switch
+                trackColor={{ false: "#ECECEC", true: COLORS.tertiary }}
+                thumbColor={isEnabled ? "#fff" : "#fff"}
+                ios_backgroundColor="#ECECEC"
+                onValueChange={toggleSwitch}
+                value={isEnabled}
+              />
+            </View>
+          </>
+        )}
 
         <Text style={{ fontFamily: FONT.bold, paddingTop: 15 }}>
           Apply Job Management
         </Text>
-        <ApplyManagement user={user} />
+        <ApplyManagement user={account} />
 
         <Text style={{ fontFamily: FONT.bold, paddingTop: 15 }}>
           Account Settings

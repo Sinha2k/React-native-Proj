@@ -5,7 +5,7 @@ import Toast from "react-native-root-toast";
 import { COLORS } from "../../constants";
 import { router } from "expo-router";
 
-export const API_URL = "http://192.168.3.106:1337/api";
+export const API_URL = "https://72cb-27-69-6-204.ngrok-free.app/api";
 const AuthContext = createContext();
 
 export const useAuth = () => {
@@ -30,9 +30,13 @@ export const AuthProvider = ({ children }) => {
     status: "idle",
   });
 
+  const [companyAddress, setCompanyAddress] = useState("")
+
+  const [roleData, setRoleData] = useState([])
+
   const getUser = async (token) => {
     try {
-      const res = await axios.get(`${API_URL}/users/me`, {
+      const res = await axios.get(`${API_URL}/users/me?populate=deep,3`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -63,6 +67,7 @@ export const AuthProvider = ({ children }) => {
   const login = async (account) => {
     try {
       setAuthState({ ...authState, status: "loading" });
+      console.log(account, authState);
       const response = await axios.post(`${API_URL}/auth/local`, {
         identifier: account.email,
         password: account.password,
@@ -105,6 +110,8 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = async () => {
+    router.push("/login");
+    showToast("Logout success", COLORS.tertiary);
     axios.defaults.headers.common["Authorization"] = "";
 
     await SecureStore.deleteItemAsync("TOKEN_KEY");
@@ -114,16 +121,18 @@ export const AuthProvider = ({ children }) => {
       user: {},
       status: "idle",
     });
-    showToast("Logout success", COLORS.tertiary);
-    router.push("/login");
   };
 
   const updateRole = async (data) => {
     try {
-      await axios.put(`${API_URL}/users/${data.userId}`, {
+      const res = await axios.put(`${API_URL}/users/${data.userId}`, {
         role: data.role
       })
-      router.push("/home")
+      if(res.data.role.name === "Employee") {
+        router.push("/home")
+      } else {
+        router.push("/createCompany")
+      }
     } catch (err) {
       showToast(err.response.data.error.message, "red")
     }
@@ -134,7 +143,12 @@ export const AuthProvider = ({ children }) => {
     onLogout: logout,
     onRegister: register,
     updateRole: updateRole,
+    setRoleData: setRoleData,
+    roleData: roleData,
     authState: authState,
+
+    companyAddress: companyAddress,
+    setCompanyAddress: setCompanyAddress
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

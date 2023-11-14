@@ -1,4 +1,4 @@
-import { View, Text, FlatList, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 
 import styles from "./body.style";
 import Information from "../tabs/information";
@@ -32,20 +32,16 @@ const JobDetailBody = ({ job, tabs, activeTab, setActiveTab }) => {
   return (
     <>
       <View style={styles.container}>
-        <FlatList
-          data={tabs}
-          horizontal
-          renderItem={({ item }) => {
-            return (
-              <TabButton
-                name={item}
-                activeTab={activeTab}
-                onHandleClick={() => setActiveTab(item)}
-              />
-            );
-          }}
-          keyExtractor={(item) => item}
-        />
+        <View style={{display: 'flex', flexDirection: 'row'}}>
+        {tabs.map((item, index) => (
+          <TabButton
+            key={index}
+            name={item}
+            activeTab={activeTab}
+            onHandleClick={() => setActiveTab(item)}
+          />
+        ))}
+        </View>
       </View>
       <View>{RenderTabContent(activeTab, job)}</View>
     </>

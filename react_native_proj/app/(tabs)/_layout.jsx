@@ -1,10 +1,13 @@
 import { Tabs } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { ActionSheetProvider } from "@expo/react-native-action-sheet";
+import { useAuth } from "../context/AuthContext";
 
 import { COLORS } from "../../constants";
-import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 
 export default () => {
+  const { authState } = useAuth();
+
   return (
     <ActionSheetProvider>
       <Tabs>
@@ -42,23 +45,45 @@ export default () => {
           }}
           name="allJob"
         />
-        <Tabs.Screen
-          options={{
-            headerShown: false,
-            tabBarActiveTintColor: COLORS.tertiary,
-            tabBarLabel: "Add",
-            tabBarIcon: ({ focused }) => {
-              return (
-                <Ionicons
-                  name={`${focused ? "add-circle" : "add-circle-outline"}`}
-                  color={focused ? COLORS.tertiary : COLORS.gray}
-                  size={24}
-                />
-              );
-            },
-          }}
-          name="addJob"
-        />
+
+        {authState.user?.role?.data.attributes?.name === "EmployerCompany" ? (
+          <Tabs.Screen
+            options={{
+              headerShown: false,
+              tabBarActiveTintColor: COLORS.tertiary,
+              tabBarLabel: "Add Job",
+              tabBarIcon: ({ focused }) => {
+                return (
+                  <Ionicons
+                    name={`${focused ? "add-circle" : "add-circle-outline"}`}
+                    color={focused ? COLORS.tertiary : COLORS.gray}
+                    size={24}
+                  />
+                );
+              },
+            }}
+            name="addJob"
+          />
+        ) : (
+          <Tabs.Screen
+            options={{
+              headerShown: false,
+              tabBarActiveTintColor: COLORS.tertiary,
+              tabBarLabel: "Add Job",
+              tabBarIcon: ({ focused }) => {
+                return (
+                  <Ionicons
+                    name={`${focused ? "add-circle" : "add-circle-outline"}`}
+                    color={focused ? COLORS.tertiary : COLORS.gray}
+                    size={24}
+                  />
+                );
+              },
+              href: null,
+            }}
+            name="addJob"
+          />
+        )}
         <Tabs.Screen
           options={{
             headerShown: false,

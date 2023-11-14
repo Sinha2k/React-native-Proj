@@ -174,9 +174,11 @@ const Presentation = () => {
 
   const navigate = () => {
     authState.authenticated
-    ? authState.user?.role?.data.id == 1
-      ? router.push("/role_permission")
+    ? authState.user?.role?.data.id > 1
+      ? authState.user?.role?.data.attributes.name === "Employer" 
+      ? router.push("/createCompany")
       : router.push("/home")
+      : router.push("/role_permission")
     : router.push("/login");
   }
 

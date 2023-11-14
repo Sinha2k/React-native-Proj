@@ -3,25 +3,29 @@ import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons'
 
 import { COLORS, FONT, SIZES } from '../../../constants';
+import { router } from 'expo-router';
 
 const dataMap = [
     {
         id: 0,
         title: 'Applied Job',
         key: 'appliedJob',
-        iconName: 'desktop'
+        iconName: 'desktop',
+        route: "/employeeManage/apply"
     },
     {
         id: 1,
         title: 'Saved Job',
         key: 'savedJob',
-        iconName: 'bookmarks'
+        iconName: 'bookmarks',
+        route: "/employeeManage/save"
     },
     {
         id: 2,
         title: 'Suitabled Job',
         key: 'suitabledJob',
-        iconName: 'checkmark-circle'
+        iconName: 'checkmark-circle',
+        route: "/employeeManage/suitable"
     }
 ]
 
@@ -29,13 +33,13 @@ const ApplyManagement = ({user}) => {
     return (
         <View style={styles.container}>
             {dataMap.map((item) => (
-                <TouchableOpacity style={styles.itemStyle} key={item.id}>
+                <TouchableOpacity onPress={() => router.push(item.route)} style={styles.itemStyle} key={item.id}>
                     <View style={styles.iconStyle}>
                         <Ionicons style={{marginLeft: 2}} name={item.iconName} size={20} color={COLORS.tertiary} />
                     </View>
                     <View style={styles.itemContent}>
                         <Text style={{fontFamily: FONT.medium, width: '65%'}}>{item.title}</Text>
-                        <Text style={{fontFamily: FONT.medium, fontSize: SIZES.large}}>{user[item.key]?.length}</Text>
+                        <Text style={{fontFamily: FONT.medium, fontSize: SIZES.large}}>{user[item.key]?.data.length}</Text>
                     </View>
                 </TouchableOpacity>
             ))}

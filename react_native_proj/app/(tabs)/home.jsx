@@ -16,6 +16,7 @@ import NearbyJob from "../../components/home/NearbyJob";
 import { getAllJobs } from "../../redux/reducer/jobSliceReducer";
 import { getEmployee } from "../../redux/reducer/employeeSliceReducer";
 import { useAuth } from "../context/AuthContext";
+import { getEmployer } from "../../redux/reducer/employerSliceReducer";
 
 const Home = () => {
   const scrollY = new Animated.Value(0);
@@ -41,9 +42,15 @@ const Home = () => {
 
   const status = useSelector((state) => state.jobs.status);
 
-  const account = useSelector((state) => state.employee.account);
+  const { authState } = useAuth();
 
-  const {authState} = useAuth()
+  const roleName = authState.user?.role?.data?.attributes?.name
+
+  const {account} = useSelector((state) =>
+    roleName === "Employee"
+      ? state.employee
+      : state.employer
+  );
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -55,8 +62,12 @@ const Home = () => {
 
   useEffect(() => {
     dispatch(getAllJobs());
-    dispatch(getEmployee(authState.user.id))
-  }, []);
+    dispatch(
+      roleName === "Employee"
+        ? getEmployee(authState.user.id)
+        : getEmployer(authState.user.id)
+    );
+  }, [roleName]);
 
   return (
     <SafeAreaView
@@ -96,12 +107,13 @@ const Home = () => {
           {/* <ScreenHeaderBtn iconUrl={images.profile} dimension="100%" /> */}
           <Image
             source={{
-              uri: account?.avatar?.data !== null
-                ? account?.avatar?.data?.attributes.url
-                : "https://res.cloudinary.com/dwapyi65c/image/upload/v1698951441/profile_60c5a0cd5b.png",
+              uri:
+                account?.avatar?.data !== null
+                  ? account?.avatar?.data?.attributes.url
+                  : "https://res.cloudinary.com/dwapyi65c/image/upload/v1698951441/profile_60c5a0cd5b.png",
             }}
             resizeMode="cover"
-            style={{width: 50, height: 50, borderRadius: 20}}
+            style={{ width: 50, height: 50, borderRadius: 20 }}
           />
           <View style={{ marginLeft: 20 }}>
             <Text style={{ fontFamily: FONT.medium, fontSize: SIZES.medium }}>

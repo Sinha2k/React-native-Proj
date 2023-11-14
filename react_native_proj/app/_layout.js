@@ -6,6 +6,7 @@ import { Provider } from "react-redux";
 import { store } from "../redux/store";
 import { RootSiblingParent } from "react-native-root-siblings";
 import { AuthProvider, useAuth } from "./context/AuthContext";
+import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -48,12 +49,18 @@ const Layout = () => {
             options={{ headerShown: false, gestureEnabled: false }}
             name="role_permission"
           />
+        ) : authState.user?.role?.data.attributes.name === "Employer" ? (
+          <Stack.Screen
+            options={{ headerShown: false, gestureEnabled: false }}
+            name="createCompany"
+          />
         ) : (
           <Stack.Screen
             options={{ headerShown: false, gestureEnabled: false }}
             name="(tabs)"
           />
         )}
+        <Stack.Screen name="(modal)/map" />
       </Stack>
     </Provider>
   );
@@ -63,7 +70,9 @@ const App = () => {
   return (
     <RootSiblingParent>
       <AuthProvider>
-        <Layout />
+        <ActionSheetProvider>
+          <Layout />
+        </ActionSheetProvider>
       </AuthProvider>
     </RootSiblingParent>
   );

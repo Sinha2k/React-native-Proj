@@ -14,7 +14,21 @@
           "//": "Disables the microphone permission",
           "microphonePermission": false
         }
-      ]
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
+        }
+      ],
+      [
+        "expo-document-picker",
+        {
+          "iCloudContainerEnvironment": "Production"
+        }
+      ],
+      "@config-plugins/react-native-blob-util",
+      "@config-plugins/react-native-pdf"
     ],
     "name": "react_native_proj",
     "slug": "react_native_proj",
@@ -30,7 +44,8 @@
       "bundleIdentifier": "com.personal.reactNativeProj",
       "config": {
         "usesNonExemptEncryption": false
-      }
+      },
+      "usesIcloudStorage": true
     },
     "android": {
       "package": "com.personal.reactNativeProj",

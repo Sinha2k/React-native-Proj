@@ -121,6 +121,7 @@ const Login = () => {
                 setAccountData({ ...accountData, [item.key]: value })
               }
               secureTextEntry={item.key === "password" && !hide}
+              keyboardType={item.key === "email" ? "email-address" : "visible-password"}
             />
             {item.isPassword && (
               <Ionicons

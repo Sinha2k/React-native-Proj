@@ -132,6 +132,7 @@ const BottomModal = ({
           }}
           enabled={
             data["Place"]?.length <= 4 ||
+            data["location"]?.length <= 4 ||
             data["placeJob"]?.length <= 4 ||
             data["desiredJob"]?.length <= 5
           }
@@ -160,6 +161,7 @@ const BottomModal = ({
               </TouchableOpacity>
             </View>
             {(keyFilter === "Place" ||
+              keyFilter === "location" ||
               keyFilter === "placeJob" ||
               keyFilter === "desiredJob") && (
               <View style={styles.searchContainer}>
@@ -209,7 +211,7 @@ const BottomModal = ({
                       <Text style={styles.textItem}>
                         {keyFilter === "exp" ? item.desc : item}
                       </Text>
-                      {keyFilter === "placeJob" ||
+                      {keyFilter === "placeJob" || keyFilter === "location" ||
                       keyFilter === "desiredJob" ? (
                         <Checkbox
                           color={

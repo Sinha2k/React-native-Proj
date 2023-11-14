@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
+import {
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Text,
+  Image,
+} from "react-native";
 import { useSelector } from "react-redux";
+import { router } from "expo-router";
 
 import BottomModal from "../../utils/modal";
 import useFetchData from "../../utils/filter/api";
@@ -26,14 +33,16 @@ const desiredJobData = [
   "Designer Graphic",
 ];
 
-const Profile = ({ user }) => {
+const Profile = ({ role, openBottomSheet }) => {
   const [visible, setVisible] = useState(false);
 
   const { provinceData, err } = useFetchData();
 
   const [keyFilter, setKeyFilter] = useState("");
 
-  const account = useSelector(state => state.employee.account)
+  const { account, status } = useSelector((state) =>
+    role === "Employee" ? state.employee : state.employer
+  );
 
   const [chooseFilter, setChooseFilter] = useState({
     placeJob: account.placeJob,
@@ -58,37 +67,84 @@ const Profile = ({ user }) => {
     }
   }, [provinceData]);
   return (
-    <View>
+    <View style={{ alignItems: "center" }}>
+      {role === "EmployerCompany" && (
+        <TouchableOpacity
+          onPress={openBottomSheet}
+          style={styles.uploadContainer}
+        >
+          <Image
+            style={styles.logoCompany}
+            resizeMode="cover"
+            source={{
+              uri: account.company?.data?.attributes?.logo?.data
+                ? account.company?.data?.attributes?.logo?.data?.attributes?.url
+                : "https://icons.veryicon.com/png/o/miscellaneous/zr_icon/company-23.png",
+            }}
+          />
+          <Text style={styles.uploadText}>Press to upload company logo</Text>
+        </TouchableOpacity>
+      )}
+      {role === "EmployerCompany" && (
+        <TouchableOpacity
+          style={{
+            width: "100%",
+            justifyContent: "flex-end",
+            display: "flex",
+            flexDirection: "row",
+            marginBottom: -5
+          }}
+          onPress={() => router.push(`/update-company/${account.company?.data?.id}`)}
+        >
+          <Text style={{ fontFamily: FONT.bold, color: COLORS.tertiary }}>
+            Update company
+          </Text>
+        </TouchableOpacity>
+      )}
       <View style={styles.profileItem}>
         <View style={styles.profileTitle}>
-          <Text style={{ fontFamily: FONT.bold }}>Experiment</Text>
-          <TouchableOpacity onPress={() => clickEdit("exp")}>
-            <Text style={{ fontFamily: FONT.bold, color: COLORS.tertiary }}>
-              Edit
-            </Text>
-          </TouchableOpacity>
+          <Text style={{ fontFamily: FONT.bold }}>
+            {role === "EmployerCompany" ? "Company name" : "Experiment"}
+          </Text>
+          {role === "Employee" && (
+            <TouchableOpacity onPress={() => clickEdit("exp")}>
+              <Text style={{ fontFamily: FONT.bold, color: COLORS.tertiary }}>
+                Edit
+              </Text>
+            </TouchableOpacity>
+          )}
         </View>
         <View style={styles.profileContent}>
           {/* <Text style={styles.profileContentText}>
             {user.exp === 0 ? "No experiment" : user.exp + "years"}
           </Text> */}
           <Text style={styles.profileContentText}>
-            {expData.find((item) => item.value == chooseFilter.exp)?.desc}
+            {role === "EmployerCompany"
+              ? account.company?.data?.attributes?.name
+              : expData.find((item) => item.value == chooseFilter.exp)?.desc}
           </Text>
           <View></View>
         </View>
       </View>
       <View style={styles.profileItem}>
         <View style={styles.profileTitle}>
-          <Text style={{ fontFamily: FONT.bold }}>Desired Job</Text>
-          <TouchableOpacity onPress={() => clickEdit("desiredJob")}>
-            <Text style={{ fontFamily: FONT.bold, color: COLORS.tertiary }}>
-              Edit
-            </Text>
-          </TouchableOpacity>
+          <Text style={{ fontFamily: FONT.bold }}>
+            {role === "EmployerCompany" ? "Company website" : "Desired Job"}
+          </Text>
+          {role === "Employee" && (
+            <TouchableOpacity onPress={() => clickEdit("desiredJob")}>
+              <Text style={{ fontFamily: FONT.bold, color: COLORS.tertiary }}>
+                Edit
+              </Text>
+            </TouchableOpacity>
+          )}
         </View>
         <View style={styles.profileContent}>
-          {chooseFilter.desiredJob?.length > 0 ? (
+          {role === "EmployerCompany" ? (
+            <Text style={styles.profileContentText}>
+              {account.company?.data?.attributes?.url}
+            </Text>
+          ) : chooseFilter.desiredJob?.length > 0 ? (
             chooseFilter.desiredJob?.map((item, index) => (
               <Text key={index} style={styles.profileContentText}>
                 {item}
@@ -110,15 +166,23 @@ const Profile = ({ user }) => {
       </View>
       <View style={styles.profileItem}>
         <View style={styles.profileTitle}>
-          <Text style={{ fontFamily: FONT.bold }}>Place</Text>
-          <TouchableOpacity onPress={() => clickEdit("placeJob")}>
-            <Text style={{ fontFamily: FONT.bold, color: COLORS.tertiary }}>
-              Edit
-            </Text>
-          </TouchableOpacity>
+          <Text style={{ fontFamily: FONT.bold }}>
+            {role === "EmployerCompany" ? "Company address" : "Place"}
+          </Text>
+          {role === "Employee" && (
+            <TouchableOpacity onPress={() => clickEdit("placeJob")}>
+              <Text style={{ fontFamily: FONT.bold, color: COLORS.tertiary }}>
+                Edit
+              </Text>
+            </TouchableOpacity>
+          )}
         </View>
         <View style={styles.profileContent}>
-          {chooseFilter.placeJob?.length > 0 ? (
+          {role === "EmployerCompany" ? (
+            <Text style={styles.profileContentText}>
+              {account.company?.data?.attributes?.address}
+            </Text>
+          ) : chooseFilter.placeJob?.length > 0 ? (
             chooseFilter.placeJob?.map((item, index) => (
               <Text key={index} style={styles.profileContentText}>
                 {item}
@@ -155,6 +219,31 @@ const Profile = ({ user }) => {
 };
 
 const styles = StyleSheet.create({
+  uploadContainer: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderColor: COLORS.gray2,
+    borderWidth: 1,
+    borderRadius: 3,
+    marginBottom: 10,
+    width: "30%",
+    marginTop: 10,
+  },
+  uploadText: {
+    fontFamily: FONT.regular,
+    fontSize: 7,
+    width: 80,
+    textAlign: "center",
+    opacity: 0.6,
+  },
+  logoCompany: {
+    width: 60,
+    height: 60,
+  },
   profileItem: {
     width: "100%",
     paddingVertical: 15,
