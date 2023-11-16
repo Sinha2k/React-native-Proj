@@ -1,6 +1,6 @@
 # React-native-Proj
 Learning React-native
-This application has been created for the purpose of practicing programming skills with React Native. It's called TopJob app where the employee find their perfect job and the employer hiring. This app has build with Front-end(React-native)
+This application has been created for the purpose of practicing programming skills with React Native. It's called TopJob app where the employee find their perfect job and the employer hiring. This app has build with Front-end(React-native + Redux-toolkit + Map)
 and Back-end(Strapi). The following is the interface of the app: 
 
 *)The Presentation Page:
