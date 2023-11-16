@@ -26,6 +26,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: SIZES.small,
     marginTop: 8,
+    height: 36
   },
   sala_loca: {
     display: "flex",

@@ -7,7 +7,7 @@ const initialState = {
   status: "idle",
 };
 
-const api = "https://72cb-27-69-6-204.ngrok-free.app/api/";
+const api = "https://9107-2402-800-61cf-8b27-b40e-9466-d1d1-fb91.ngrok-free.app/api/";
 
 export const employeeSlice = createSlice({
   name: "employee",
@@ -76,7 +76,7 @@ export const getEmployee = createAsyncThunk(
   async (userId) => {
     try {
       const response = await axios.get(
-        api + `employees?profile=${userId}&populate=deep,4`
+        api + `employees?filters[profile][id][$eq]=${userId}&populate=deep,4`
       );
       return response.data.data[0];
     } catch (err) {

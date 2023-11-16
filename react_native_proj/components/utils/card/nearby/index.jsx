@@ -40,13 +40,17 @@ const NearbyCard = ({ job, handleNavigate }) => {
     );
   };
 
-  return status === "loading" ? (
+  return status === "loading" || !job ? (
     renderSkeletonCard()
   ) : (
     <TouchableOpacity style={styles.card} onPress={handleNavigate}>
       <TouchableOpacity>
         <Image
-          source={{ uri: job.company.data.attributes.logo.data.attributes.url }}
+          source={{
+            uri: job.company.data.attributes.logo.data
+              ? job.company.data.attributes.logo.data.attributes.url
+              : "https://icons.veryicon.com/png/o/miscellaneous/zr_icon/company-23.png",
+          }}
           resizeMode="contain"
           style={styles.logo}
         />

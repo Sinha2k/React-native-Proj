@@ -46,12 +46,13 @@ const CreateCompany = () => {
       address: companyAddress,
     }
     try {
-      await axios.post("https://72cb-27-69-6-204.ngrok-free.app/api/companies", {
+      await axios.post("https://9107-2402-800-61cf-8b27-b40e-9466-d1d1-fb91.ngrok-free.app/api/companies", {
         data: data
       });
       await updateRole({ userId: authState.user.id, role: roleData?.find(item => item.name === "EmployerCompany").id })
       setLoading(false)
       showToast("Create company success", COLORS.tertiary);
+      router.push('/home');
     } catch (err) {
       showToast(err.response.data, "red");
     }

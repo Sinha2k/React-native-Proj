@@ -22,7 +22,7 @@ import ModalUploadCV from "../../components/utils/modal/modalUploadCv";
 
 const tabs = ["Information", "Company", "Related Job"];
 
-const api = "https://72cb-27-69-6-204.ngrok-free.app/api";
+const api = "https://9107-2402-800-61cf-8b27-b40e-9466-d1d1-fb91.ngrok-free.app/api";
 
 const JobDetails = () => {
   const params = useSearchParams();
@@ -91,8 +91,8 @@ const JobDetails = () => {
 
   useEffect(() => {
     const loadJobApply = async (jobId, userId) => {
-      if (jobId > 0 && userId > 0) {
-        dispatch(getJobById(jobId));
+      dispatch(getJobById(jobId));
+      if (userId > 0) {
         await getApply(userId, jobId);
       }
     };

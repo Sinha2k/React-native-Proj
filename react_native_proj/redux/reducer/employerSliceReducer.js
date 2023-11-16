@@ -9,7 +9,7 @@ const initialState = {
   company: {},
 };
 
-const api = "https://72cb-27-69-6-204.ngrok-free.app/api/";
+const api = "https://9107-2402-800-61cf-8b27-b40e-9466-d1d1-fb91.ngrok-free.app/api/";
 
 export const employerSlice = createSlice({
   name: "employer",
@@ -86,7 +86,7 @@ export const getEmployer = createAsyncThunk(
   async (userId) => {
     try {
       const response = await axios.get(
-        api + `employers?profile=${userId}&populate=deep,3`
+        api + `employers?filters[profile][id][$eq]=${userId}&populate=deep,3`
       );
       return response.data.data[0];
     } catch (err) {

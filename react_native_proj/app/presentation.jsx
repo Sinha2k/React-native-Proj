@@ -156,8 +156,8 @@ const Presentation = () => {
     const message = {
       to: expoPushToken,
       sound: "default",
-      title: "Nam chubin",
-      body: "Nam thik an chubin cua Quang",
+      title: "Notification",
+      body: "You have a new notification",
       data: { someData: "goes here" },
     };
 
@@ -327,10 +327,10 @@ const Presentation = () => {
         </View>
       </View>
 
-      <Button
+      {/* <Button
         title="Send notification"
         onPress={() => sendPushNotification(devicePushToken)}
-      />
+      /> */}
     </SafeAreaView>
   );
 };
