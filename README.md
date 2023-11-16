@@ -11,7 +11,7 @@ and Back-end(Strapi). The following is the interface of the app:
 ![Login](https://github.com/Sinha2k/React-native-Proj/assets/93465305/13124401-24a1-4279-90b9-64216faf1815)
 ![Signup](https://github.com/Sinha2k/React-native-Proj/assets/93465305/3fbec1d4-fc1d-42f1-b59a-cf5efacc7e4c)
 ![ChangePassword](https://github.com/Sinha2k/React-native-Proj/assets/93465305/278789fc-eccf-4876-a420-b4811f531671)
-![Role_Permission](https://github.com/Sinha2k/React-native-Proj/assets/93465305/684bebc0-3972-4c1c-a4b6-c18060029f51)
+     ![Role_Permission](https://github.com/Sinha2k/React-native-Proj/assets/93465305/684bebc0-3972-4c1c-a4b6-c18060029f51)
 
 
 *)The ui for The employee:
